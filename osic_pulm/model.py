@@ -9,10 +9,11 @@ def build_model(X_train, hparams):
         layers.Dense(1)
     ])
 
-    optimizer = tf.keras.optimizers.RMSprop(hparams["LEARNING_RATE"])
+    # optimizer = tf.keras.optimizers.RMSprop(hparams["LEARNING_RATE"])
+    optimizer = tf.keras.optimizers.Adam(lr=0.1, beta_1=0.9, beta_2=0.999)
 
     #   quantile=0.5
-    #   loss=tf.keras.losses.MeanSquaredLogarithmicError()
+    # loss = tf.keras.losses.MeanSquaredLogarithmicError()
     #   loss=lambda y,f: tilted_loss(quantile,y,f)
     #   loss=log_custom_loss
 

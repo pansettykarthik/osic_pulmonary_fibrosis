@@ -42,7 +42,7 @@ def process_categorical_data(train_csv):
 
     return X_data, y_data
 
-
+# THIS IS NOT ACTUALLY TEST SET - THIS IS JUST VALIDATION SET
 def test_train_split(X_data, y_data):
     X_train = X_data.sample(frac=0.8, random_state=0)
     X_test = X_data.drop(X_train.index)

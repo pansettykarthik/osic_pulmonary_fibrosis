@@ -1,4 +1,4 @@
 hparams = {
-    "EPOCHS": 1000,
+    "EPOCHS": 200,
     "LEARNING_RATE": 0.0005
 }
