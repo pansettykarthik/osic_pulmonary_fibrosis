@@ -3,14 +3,14 @@ import tensorflow as tf
 from tensorflow.keras import layers
 from utils.metric_utils import *
 
-def build_model(X_train):
+def build_model(X_train, hparams):
     model = keras.Sequential([
         layers.Dense(128, activation='relu', input_shape=[len(X_train.keys())]),
         layers.Dense(64, activation='relu'),
         layers.Dense(1)
     ])
 
-    optimizer = tf.keras.optimizers.RMSprop(0.0005)
+    optimizer = tf.keras.optimizers.RMSprop(hparams["LEARNING_RATE"])
 
     #   quantile=0.5
     #   loss=tf.keras.losses.MeanSquaredLogarithmicError()
