@@ -1,12 +1,11 @@
 from tensorflow import keras
-import tensorflow as tf
 from tensorflow.keras import layers
 from utils.metric_utils import *
 
 def build_model(X_train, hparams):
     model = keras.Sequential([
-        layers.Dense(128, activation='relu', input_shape=[len(X_train.keys())]),
-        layers.Dense(64, activation='relu'),
+        layers.Dense(512, activation='relu', input_shape=[len(X_train.keys())]),
+        layers.Dense(256, activation='relu'),
         layers.Dense(1)
     ])
 

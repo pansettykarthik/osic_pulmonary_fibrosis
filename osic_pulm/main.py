@@ -15,6 +15,7 @@ from hyperparameters import hparams
 # BASE_PATH = "/kaggle/input/osic-pulmonary-fibrosis-progression/"
 BASE_PATH = ""
 
+
 def train(normalized_X_train, y_train, hparams):
     model = build_model(normalized_X_train, hparams)
     print(model.summary())
@@ -22,6 +23,8 @@ def train(normalized_X_train, y_train, hparams):
     time_now = dt.now().strftime("%Y%m%d_%H%M%S")
     my_callbacks = [
         tf.keras.callbacks.TensorBoard(log_dir=BASE_PATH + 'logs/' + str(time_now)),
+        tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.5,
+                                             patience=5, verbose=1, min_lr=1e-8)
     ]
 
     history = model.fit(
