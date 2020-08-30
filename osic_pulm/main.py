@@ -20,12 +20,12 @@ def train(normalized_X_train, y_train, EPOCHS):
 
     time_now = dt.now().strftime("%Y%m%d_%H%M%S")
     my_callbacks = [
-        tf.keras.callbacks.TensorBoard(log_dir=DATA_PATH + 'logs/' + str(time_now)),
+        tf.keras.callbacks.TensorBoard(log_dir=BASE_PATH + 'logs/' + str(time_now)),
     ]
 
     history = model.fit(
         normalized_X_train, y_train, batch_size=32,
-        epochs=EPOCHS, validation_split=0.2, verbose=1)
+        epochs=EPOCHS, validation_split=0.2, verbose=1, callbacks=my_callbacks)
 
     return model
 
