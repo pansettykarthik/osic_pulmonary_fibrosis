@@ -6,7 +6,7 @@ def build_model(X_train, hparams):
     model = keras.Sequential([
         layers.Dense(512, activation='relu', input_shape=[len(X_train.keys())]),
         layers.Dense(256, activation='relu'),
-        layers.Dense(2)
+        layers.Dense(1)
     ])
 
     optimizer = tf.keras.optimizers.RMSprop(hparams["LEARNING_RATE"])
