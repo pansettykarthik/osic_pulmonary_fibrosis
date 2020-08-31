@@ -1,7 +1,7 @@
 import numpy as np
 import tensorflow as tf
 import keras.backend as K
-
+CONFIDENCE = 300
 
 def laplace_log_likelihood(actual_fvc, predicted_fvc, confidence, return_values=False):
     sd_clipped = np.maximum(confidence, 70)
@@ -19,8 +19,9 @@ def log_custom_loss(y_true, y_pred):
     tf.dtypes.cast(y_pred, tf.float32)
 
     fvc_pred = y_pred
-    sigma = tf.math.reduce_std(y_pred)
+    # sigma = tf.math.reduce_std(y_pred)
 
+    sigma = tf.constant(CONFIDENCE, dtype=tf.float32)
     sigma_clip = tf.maximum(sigma, 70)
     delta = tf.abs(y_true - fvc_pred)
     delta = tf.minimum(delta, 1000)

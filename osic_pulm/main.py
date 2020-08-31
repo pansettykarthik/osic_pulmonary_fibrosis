@@ -14,7 +14,7 @@ from hyperparameters import hparams
 
 # BASE_PATH = "/kaggle/input/osic-pulmonary-fibrosis-progression/"
 BASE_PATH = ""
-
+CONFIDENCE = 300
 
 def train(normalized_X_train, y_train, hparams):
     model = build_model(normalized_X_train, hparams)
@@ -24,7 +24,7 @@ def train(normalized_X_train, y_train, hparams):
     my_callbacks = [
         tf.keras.callbacks.TensorBoard(log_dir=BASE_PATH + 'logs/' + str(time_now)),
         tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.5,
-                                             patience=5, verbose=1, min_lr=1e-8)
+                                             patience=10, verbose=1, min_lr=1e-8)
     ]
 
     history = model.fit(
@@ -36,7 +36,7 @@ def train(normalized_X_train, y_train, hparams):
 
 def validate(model, X_test, y_test):
     y_pred = model.predict(X_test).reshape(-1)
-    return y_pred, laplace_log_likelihood(y_test, y_pred, np.std(y_pred))
+    return y_pred, laplace_log_likelihood(y_test, y_pred, CONFIDENCE)
 
 
 def predict_test(model):
@@ -47,7 +47,7 @@ def predict_test(model):
 
     submit_df['Patient_Week'] = test_df['Patient_Week']
     submit_df['FVC'] = y_test_df
-    submit_df['Confidence'] = np.std(y_test_df)
+    submit_df['Confidence'] = CONFIDENCE
 
     return submit_df
 
