@@ -45,7 +45,7 @@ def process_categorical_data(train_csv):
 
 
     X_data = train_csv[['SmokingStatus']]
-    selected_columns = ['Age', 'weeks_passed', 'base_fvc', 'base_percent', 'Sex', 'base_week']
+    selected_columns = ['Age', 'weeks_passed', 'base_fvc', 'base_percent', 'Sex']
     X_data[selected_columns] = train_csv[selected_columns]
     y_data = train_csv['FVC']
     X_data = map_categorical(X_data)
@@ -85,14 +85,12 @@ def norm(x, train_stats):
 def normalize_data(X_train, X_test):
     train_stats = X_train.describe().transpose()
     categorical_columns = ['Sex', 'ex_smoker', 'never_smoked']
-    continuous_columns = ['Age', 'weeks_passed', 'ref_fvc', 'base_fvc', 'base_percent', 'base_week']
+    continuous_columns = ['Age', 'weeks_passed', 'ref_fvc', 'base_fvc', 'base_percent']
+
     normalized_X_train = norm(X_train[continuous_columns], train_stats)
     normalized_X_train[categorical_columns] = X_train[categorical_columns]
     normalized_X_test = norm(X_test[continuous_columns], train_stats)
     normalized_X_test[categorical_columns] = X_test[categorical_columns]
-
-    normalized_X_train = norm(X_train, train_stats)
-    normalized_X_test = norm(X_test, train_stats)
 
     return normalized_X_train, normalized_X_test
 
@@ -110,22 +108,23 @@ def load_test():
     test_df['weeks_passed'] = test_df['Weeks'] - test_df['base_week']
     test_df['base_percent'] /= 100.
     test_df['ref_fvc'] = test_df['base_fvc'] / test_df['base_percent']
-    test_df = test_df.set_index('Patient_Week')
+    # test_df = test_df.set_index('Patient_Week')
     return test_df, submit_df[['Patient_Week', 'FVC', 'Confidence']]
 
 
-def process_test(test_df):
+def process_test(test_df, X_train, normalized_X_train):
     test_df = map_categorical(test_df)
     test_df = test_df.drop(columns=['SmokingStatus', 'Confidence', 'FVC', 'Weeks'])
 
-    test_stats = test_df.describe().transpose()
+    train_stats = X_train.describe().transpose()
+    column_names = X_train.columns.tolist()
+    test_df = test_df[column_names]
     categorical_columns = ['Sex', 'ex_smoker', 'never_smoked']
-    continuous_columns = ['Age', 'weeks_passed', 'ref_fvc', 'base_fvc', 'base_percent', 'base_week']
+    continuous_columns = ['Age', 'weeks_passed', 'ref_fvc', 'base_fvc', 'base_percent']
 
-    def norm(x, train_stats):
-        return (x - train_stats['mean']) / train_stats['std']
-
-    normalized_test_df = norm(test_df[continuous_columns], test_stats)
+    normalized_test_df = norm(test_df[continuous_columns], train_stats)
     normalized_test_df[categorical_columns] = test_df[categorical_columns]
+
+    normalized_test_df = normalized_test_df[normalized_X_train.columns.tolist()]
 
     return normalized_test_df
