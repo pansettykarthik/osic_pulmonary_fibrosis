@@ -59,8 +59,9 @@ if __name__ == '__main__':
     y_test_df = model.predict(normalized_test_df).reshape(-1)
     print(y_test_df)
 
+    submit_df['Patient_Week'] = test_df['Patient_Week']
     submit_df['FVC'] = y_test_df
     submit_df['Confidence'] = np.std(y_test_df)
     print(submit_df)
 
-    submit_df.to_csv("submission.csv")
+    # submit_df.to_csv("submission.csv", sep=",", index=False)
