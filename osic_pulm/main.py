@@ -34,9 +34,22 @@ def train(normalized_X_train, y_train, hparams):
     return model
 
 
-def inference(model, X_test, y_test):
+def validate(model, X_test, y_test):
     y_pred = model.predict(X_test).reshape(-1)
     return y_pred, laplace_log_likelihood(y_test, y_pred, np.std(y_pred))
+
+
+def predict_test(model):
+    test_df, submit_df = load_test()
+    normalized_test_df = process_test(test_df, X_train, normalized_X_train)
+    y_test_df = model.predict(normalized_test_df).reshape(-1)
+    # print(y_test_df)
+
+    submit_df['Patient_Week'] = test_df['Patient_Week']
+    submit_df['FVC'] = y_test_df
+    submit_df['Confidence'] = np.std(y_test_df)
+
+    return submit_df
 
 
 if __name__ == '__main__':
@@ -45,23 +58,19 @@ if __name__ == '__main__':
     normalized_X_train, normalized_X_test = normalize_data(X_train, X_test)
 
     model = train(normalized_X_train, y_train, hparams)
-    y_pred, metric = inference(model, normalized_X_test, y_test.tolist())
-    print(y_pred)
-    print(metric)
-    print(np.std(y_pred))
+    y_pred, metric = validate(model, normalized_X_test, y_test.tolist())
+    # print(y_pred)
+    print("Laplace log likelihood: ", metric)
+    print("Confidence: ", np.std(y_pred))
 
-    loss, log_laplace, mae, mse = model.evaluate(normalized_X_test, y_test, verbose=2)
+    # loss, log_laplace, mae, mse = model.evaluate(normalized_X_test, y_test, verbose=2)
 
-    test_df, submit_df = load_test()
+    # # TRAIN ON WHOLE DATA AFTER FINDING BEST PARAMS
+    # X_train_df = pd.concat([normalized_X_train, normalized_X_test])
+    # y_train_df = pd.concat([y_train, y_test])
+    # model = train(X_train_df, y_train_df, hparams)
 
-    normalized_test_df = process_test(test_df, X_train, normalized_X_train)
-
-    y_test_df = model.predict(normalized_test_df).reshape(-1)
-    print(y_test_df)
-
-    submit_df['Patient_Week'] = test_df['Patient_Week']
-    submit_df['FVC'] = y_test_df
-    submit_df['Confidence'] = np.std(y_test_df)
-    print(submit_df)
+    submit_df = predict_test(model)
+    print("\nPREDICTIONS:\n", submit_df)
 
     # submit_df.to_csv("submission.csv", sep=",", index=False)
