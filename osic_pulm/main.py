@@ -14,7 +14,7 @@ from hyperparameters import hparams
 
 # BASE_PATH = "/kaggle/input/osic-pulmonary-fibrosis-progression/"
 BASE_PATH = ""
-CONFIDENCE = 300
+CONFIDENCE = 250
 
 def train(normalized_X_train, y_train, hparams):
     model = build_model(normalized_X_train, hparams)

@@ -1,7 +1,7 @@
 import numpy as np
 import tensorflow as tf
 import keras.backend as K
-CONFIDENCE = 300
+CONFIDENCE = 250
 
 def laplace_log_likelihood(actual_fvc, predicted_fvc, confidence, return_values=False):
     sd_clipped = np.maximum(confidence, 70)
