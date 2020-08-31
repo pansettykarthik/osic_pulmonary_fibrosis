@@ -46,7 +46,14 @@ if __name__ == '__main__':
 
     model = train(normalized_X_train, y_train, hparams)
     y_pred, metric = inference(model, normalized_X_test, y_test.tolist())
+    print(y_pred)
     print(metric)
     print(np.std(y_pred))
 
     loss, log_laplace, mae, mse = model.evaluate(normalized_X_test, y_test, verbose=2)
+
+    test_df, submit_df = load_test()
+    normalized_test_df = process_test(test_df)
+    y_test_df = model.predict(X_test).reshape(-1)
+    print(y_test_df)
+
